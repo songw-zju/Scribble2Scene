@@ -1,7 +1,7 @@
 # Scribble2Scene
 > Song Wang, Jiawei Yu, Wentong Li, Hao Shi, Kailun Yang, Junbo Chen*, Jianke Zhu*
 
-This is the official implementation of **Label-efficient Semantic Scene Completion with Scribble Annotations** (IJCAI 2024)  [[Paper]()] [[Video]()].
+This is the official implementation of **Label-efficient Semantic Scene Completion with Scribble Annotations** (IJCAI 2024)  [[Paper](https://arxiv.org/pdf/2405.15170.pdf)] [[Video]()].
 
 
 
