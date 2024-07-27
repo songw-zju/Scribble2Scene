@@ -1,25 +1,58 @@
 # Scribble2Scene
 > Song Wang, Jiawei Yu, Wentong Li, Hao Shi, Kailun Yang, Junbo Chen*, Jianke Zhu*
 
-This is the official implementation of **Label-efficient Semantic Scene Completion with Scribble Annotations** (IJCAI 2024)  [[Paper](https://arxiv.org/pdf/2405.15170.pdf)] [[Video]()].
+This is the official implementation of **Label-efficient Semantic Scene Completion with Scribble Annotations** (IJCAI 2024)  [[Paper](https://arxiv.org/pdf/2405.15170.pdf)].
 
-
-
-## Abstract
-Semantic scene completion aims to infer the 3D geometric structures with semantic classes from camera or LiDAR, which provide essential occupancy information in autonomous driving. Prior endeavors concentrate on constructing the network or benchmark in a fully supervised manner. While the dense occupancy grids need point-wise semantic annotations, which incur expensive and tedious labeling costs. In this paper, we build a new label-efficient benchmark, named ScribbleSC, where the sparse scribble-based semantic labels are combined with dense geometric labels for semantic scene completion. In particular, we propose a simple yet effective approach called Scribble2Scene, which bridges the gap between the sparse scribble annotations and fully-supervision. Our method consists of geometric-aware auto-labelers construction and online model training with an offline-to-online distillation module to enhance the performance. Experiments on SemanticKITTI demonstrate that Scribble2Scene achieves competitive performance against the fully-supervised counterparts, showing 99% performance of the fully-supervised models with only 13.5% voxels labeled.
-
-
-## Framework
 <p align="center"> <a><img src="fig/framework.png" width="90%"></a> </p>
 
 
+## Getting Started
 
-## Citations
+We provide the core codes of our proposed Scribble2Scene for online model training (Stage-II):
+
 ```
-@inproceedings{wang2024label,
-      title={Label-efficient Semantic Scene Completion with Scribble Annotations},
-      author={Wang, Song and Yu, Jiawei and Li, Wentong and Shi, Hao and Yang, Kailun and Chen, Junbo and Zhu, Jianke},
-      booktitle={Proceedings of the Thirty-Third International Joint Conference on Artificial Intelligence (IJCAI)},
-      year={2024}
-}
+./code
+    └── projects/
+    │       ├── configs/
+    │       │     ├── scribble2scene/
+    |       |     |          ├──scribble2scene-distill.py  # the config file for Scribble2Scene Stage-II
+    │       ├── mmdet3d_plugin/
+    │       │     ├── scribble2scene/
+    |       |     |          ├──detectors
+    |       |     |          |    ├──scribble2scene_distill.py  # our Teacher-Labeler and online model architecture
+    |       |     |          ├──dense_heads
+    |       |     |          |    ├──scribble2scene_head.py  # our used completion head and loss functions
+    |       |     |          ├──utils
+    |       |     |          |    ├──distillation_loss.py  # our proposed range-guided offline-to-online distillation loss
+    └──tools/
 ```
+
+### Prepare Data-SemanticKITTI
+
+Direct downloading: 
+
+- The **semantic scene completion dataset v1.1** (SemanticKITTI voxel data, 700 MB) from [SemanticKITTI website](http://www.semantic-kitti.org/dataset.html#download).
+- The **RGB images** (Download odometry data set (color, 65 GB)) from [KITTI Odometry website](http://www.cvlibs.net/datasets/kitti/eval_odometry.php).
+
+### Run and Eval
+
+Train the online model **with our proposed Scribble2Scene** on 4 GPUs 
+
+```
+./tools/dist_train.sh ./projects/configs/scribble2scene/scribble2scene-distill.py 4
+```
+
+Eval the online model **with our proposed Scribble2Scene** on 4 GPUs
+
+```
+./tools/dist_test.sh ./projects/configs/scribble2scene/scribble2scene-distill.py ./path/to/ckpts.pth 4
+```
+
+
+
+## Acknowledgement
+
+Many thanks to these excellent open source projects:
+
+- [VoxFormer](https://github.com/NVlabs/VoxFormer)
+- [mmdetection3d](https://github.com/open-mmlab/mmdetection3d)
